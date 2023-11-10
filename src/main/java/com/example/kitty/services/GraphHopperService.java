@@ -32,10 +32,10 @@ public class GraphHopperService {
     private final String osmFileName = "roads_Kyiv.osm";
     private final String graphCacheName = "kyivRoadsCache";
 
-    static List<LatLong> convertPointListToWaypointList(PointList pointList) {
-        List<LatLong> wayPoints = new ArrayList<>();
+    static List<List<Double>> convertPointListToWaypointList(PointList pointList) {
+        List<List<Double>> wayPoints = new ArrayList<>();
         for (GHPoint3D point : pointList) {
-            wayPoints.add(new LatLong(point.lat, point.lon));
+            wayPoints.add(List.of(point.lat, point.lon));
         }
         return wayPoints;
     }
@@ -53,7 +53,7 @@ public class GraphHopperService {
     }
 
 
-    public Pair<List<LatLong>, Double> getRouteBetweenPoints(LatLongPair request) {
+    public Pair<List<List<Double>>, Double> getRouteBetweenPoints(LatLongPair request) {
         GraphHopper hopper = getGraphHopperInstance();
         GHRequest req = new GHRequest(request.getFrom().getLat(), request.getFrom().getLng(),
             request.getTo().getLat(), request.getTo().getLng())

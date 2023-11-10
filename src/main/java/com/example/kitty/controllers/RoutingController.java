@@ -26,7 +26,7 @@ public class RoutingController {
     private final GraphHopperService routingService;
 
     @PostMapping(value = ControllerAPI.CONTROLLER_GENERAL_REQUEST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<LatLong>> findRoute(@RequestBody LatLongPair latLongPair) {
+    public ResponseEntity<List<List<Double>>> findRoute(@RequestBody LatLongPair latLongPair) {
         return new ResponseEntity<>(routingService.getRouteBetweenPoints(latLongPair).getKey(), HttpStatus.OK);
     }
 
