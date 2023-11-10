@@ -55,7 +55,7 @@ public class GraphHopperService {
     public Pair<List<GeoJsonPoint>, Double> getRouteBetweenPoints(GeoJsonPoint from, GeoJsonPoint to) {
         GraphHopper hopper = getGraphHopperInstance();
         GHRequest req = new GHRequest(from.getY(), from.getX(), to.getY(), to.getX())
-            .setProfile("foot");
+            .setProfile("wheelchair");
         ResponsePath responsePath = routing(hopper, req);
         PointList pointList = responsePath.getPoints();
         Double pathDistance = responsePath.getDistance();
@@ -92,12 +92,12 @@ public class GraphHopperService {
                     putObject("datareader.file", osmFileLocation).
                     putObject("datareader.dataaccess", "RAM").
                     putObject("graph.location", cacheLocation).
-                    putObject("graph.vehicles", "foot").
+                    putObject("graph.vehicles", "wheelchair").
                     putObject("import.osm.ignored_highways", ""). //ootway,cycleway,path,pedestrian,steps,residential,track
                     putObject("index.max_region_search", 100).
                     putObject("ch.disable", true).
                     setProfiles(Collections.singletonList(
-                        new Profile("foot").setVehicle("foot").setWeighting("fastest").setTurnCosts(false)
+                        new Profile("wheelchair").setVehicle("wheelchair").setWeighting("fastest").setTurnCosts(false)
                     ))).setOSMFile(osmFileLocation);
             hopper.importOrLoad();
         }
