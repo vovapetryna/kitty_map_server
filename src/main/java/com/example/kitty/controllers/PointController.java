@@ -10,6 +10,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -21,5 +23,10 @@ public class PointController {
     @PostMapping(value = ControllerAPI.CONTROLLER_GENERAL_REQUEST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Point> create(@RequestBody PointDto dto) {
         return new ResponseEntity<>(pointService.createPoint(dto), HttpStatus.OK);
+    }
+
+    @GetMapping(value = ControllerAPI.CONTROLLER_GENERAL_REQUEST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Point>> getPointsList() {
+        return new ResponseEntity<>(pointService.getPointsList(), HttpStatus.OK);
     }
 }

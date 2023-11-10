@@ -8,6 +8,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.UUID;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -15,9 +18,11 @@ public class PointService {
     private final PointRepository pointRepository;
     private final PointMapper groupMapper;
 
-    private final IdGenerator idGenerator = new IdGenerator();
-
     public Point createPoint(PointDto pointDto) {
-        return groupMapper.toModel(pointDto);
+        return pointRepository.save(groupMapper.toModel(pointDto).setId(UUID.randomUUID().toString()));
+    }
+
+    public List<Point> getPointsList() {
+        return pointRepository.findAll();
     }
 }
