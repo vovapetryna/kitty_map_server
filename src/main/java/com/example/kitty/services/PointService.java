@@ -31,6 +31,6 @@ public class PointService {
     }
 
     public List<Point> getPointsList() {
-        return pointRepository.findAll();
+        return pointRepository.findAllTaggedWithCategory();
     }
 }
