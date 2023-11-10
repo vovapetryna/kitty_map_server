@@ -19,13 +19,18 @@ import java.util.List;
 public class Point {
     @Id
     private Long id;
-
     private String name;
-
     private Category category;
+    private List<Attribute> attributes;
+    private String subCategory;
+    private String description;
+
+    // internally used attributes (export from osm)
+    private String amenity;
+    private String wheelchair;
+    private Boolean bus_stop;
+    private String shelter;
 
     @GeoSpatialIndexed(type = GeoSpatialIndexType.GEO_2DSPHERE)
     private GeoJsonPoint location;
-
-    private List<Attribute> attributes;
 }

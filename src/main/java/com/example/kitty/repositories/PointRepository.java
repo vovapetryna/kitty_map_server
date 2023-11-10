@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface PointRepository extends MongoRepository<Point, String> {
     @Query(value="{}")
-    List<Point> findAll();
+    List<Point> findAllTagged();
 }

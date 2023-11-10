@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 
 @Slf4j
 @Service
@@ -21,6 +20,14 @@ public class PointService {
 
     public Point createPoint(PointDto pointDto) {
         return pointRepository.save(groupMapper.toModel(pointDto).setId(idGenerator.nextId()));
+    }
+
+    public Point updatePoint(Point point) {
+        return pointRepository.save(point);
+    }
+
+    public void deletePoint(Long pointId) {
+        pointRepository.deleteById(pointId.toString());
     }
 
     public List<Point> getPointsList() {

@@ -20,7 +20,7 @@ import java.util.List;
 @Slf4j
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
-@RequestMapping(ControllerAPI.POINT_CONTROLLER)
+@RequestMapping(ControllerAPI.ROUT_CONTROLLER)
 @RequiredArgsConstructor
 public class RoutingController {
     private final GraphHopperService routingService;

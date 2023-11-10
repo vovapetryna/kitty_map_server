@@ -14,10 +14,9 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PointDto {
     private String name;
-
     private Category category;
-
     private GeoJsonPoint location;
-
     private List<Attribute> attributes;
+    private String subCategory;
+    private String description;
 }
