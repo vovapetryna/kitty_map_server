@@ -27,18 +27,18 @@ public class KittyMapServerMain {
 		SpringApplication.run(KittyMapServerMain.class, args);
 	}
 
-	@Bean
-	public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
-		return args -> {
-			GeoJsonPoint from = new GeoJsonPoint(30.620930191509597, 50.39402865778816);
-			GeoJsonPoint to = new GeoJsonPoint(30.518825271259313, 50.42281479982218);
-			Pair<List<GeoJsonPoint>, Double> routingResults = graphHopperService.getRouteBetweenPoints(from, to);
-			List<GeoJsonPoint> route = routingResults.getLeft();
-			for (GeoJsonPoint point : route) {
-				System.out.println(point.getY() + "," + point.getX() + ",");
-			}
-//            collectionToFile();
-//            System.out.println("saved");
-		};
-	}
+//	@Bean
+//	public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
+//		return args -> {
+//			GeoJsonPoint from = new GeoJsonPoint(30.620930191509597, 50.39402865778816);
+//			GeoJsonPoint to = new GeoJsonPoint(30.518825271259313, 50.42281479982218);
+//			Pair<List<GeoJsonPoint>, Double> routingResults = graphHopperService.getRouteBetweenPoints(from, to);
+//			List<GeoJsonPoint> route = routingResults.getLeft();
+//			for (GeoJsonPoint point : route) {
+//				System.out.println(point.getY() + "," + point.getX() + ",");
+//			}
+////            collectionToFile();
+////            System.out.println("saved");
+//		};
+//	}
 }
