@@ -1,5 +1,7 @@
 package com.example.kitty.services;
 
+import com.example.kitty.entities.LatLong;
+import com.example.kitty.entities.LatLongPair;
 import com.graphhopper.GHRequest;
 import com.graphhopper.GHResponse;
 import com.graphhopper.GraphHopper;
@@ -11,7 +13,6 @@ import com.graphhopper.util.shapes.GHPoint3D;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
-import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -31,10 +32,10 @@ public class GraphHopperService {
     private final String osmFileName = "roads_Kyiv.osm";
     private final String graphCacheName = "kyivRoadsCache";
 
-    static List<GeoJsonPoint> convertPointListToWaypointList(PointList pointList) {
-        List<GeoJsonPoint> wayPoints = new ArrayList<>();
+    static List<LatLong> convertPointListToWaypointList(PointList pointList) {
+        List<LatLong> wayPoints = new ArrayList<>();
         for (GHPoint3D point : pointList) {
-            wayPoints.add(new GeoJsonPoint(point.lon, point.lat));
+            wayPoints.add(new LatLong(point.lat, point.lon));
         }
         return wayPoints;
     }
@@ -52,9 +53,10 @@ public class GraphHopperService {
     }
 
 
-    public Pair<List<GeoJsonPoint>, Double> getRouteBetweenPoints(GeoJsonPoint from, GeoJsonPoint to) {
+    public Pair<List<LatLong>, Double> getRouteBetweenPoints(LatLongPair request) {
         GraphHopper hopper = getGraphHopperInstance();
-        GHRequest req = new GHRequest(from.getY(), from.getX(), to.getY(), to.getX())
+        GHRequest req = new GHRequest(request.getFrom().getLatitude(), request.getFrom().getLongitude(),
+            request.getTo().getLatitude(), request.getTo().getLongitude())
             .setProfile("wheelchair");
         ResponsePath responsePath = routing(hopper, req);
         PointList pointList = responsePath.getPoints();
