@@ -55,8 +55,8 @@ public class GraphHopperService {
 
     public Pair<List<LatLong>, Double> getRouteBetweenPoints(LatLongPair request) {
         GraphHopper hopper = getGraphHopperInstance();
-        GHRequest req = new GHRequest(request.getFrom().getLatitude(), request.getFrom().getLongitude(),
-            request.getTo().getLatitude(), request.getTo().getLongitude())
+        GHRequest req = new GHRequest(request.getFrom().getLat(), request.getFrom().getLng(),
+            request.getTo().getLat(), request.getTo().getLng())
             .setProfile("wheelchair");
         ResponsePath responsePath = routing(hopper, req);
         PointList pointList = responsePath.getPoints();

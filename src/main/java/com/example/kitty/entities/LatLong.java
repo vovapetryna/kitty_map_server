@@ -10,6 +10,6 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @Data
 public class LatLong {
-    private Double latitude;
-    private Double longitude;
+    private Double lat;
+    private Double lng;
 }
