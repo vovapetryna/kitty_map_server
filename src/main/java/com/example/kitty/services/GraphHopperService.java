@@ -14,6 +14,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -22,6 +23,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public class GraphHopperService {
+    private final S3Service s3Service;
 
     private GraphHopper hopper;
 
@@ -80,9 +82,10 @@ public class GraphHopperService {
     private synchronized GraphHopper getGraphHopperInstance() {
 
         if (hopper == null) {
+            File osmFile = s3Service.downloadFileToLocalStorage("roads_kyiv.osm");
 
             String cacheLocation = routingFolderLocation + "/" + graphCacheName;
-            String osmFileLocation = routingFolderLocation + "/" + osmFileName;
+            String osmFileLocation = osmFile.getAbsolutePath();
 
             hopper = new GraphHopper().init(
                 new GraphHopperConfig().

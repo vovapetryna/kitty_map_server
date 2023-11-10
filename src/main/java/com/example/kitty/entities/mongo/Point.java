@@ -18,7 +18,7 @@ import java.util.List;
 @Data
 public class Point {
     @Id
-    private String id;
+    private Long id;
 
     private String name;
 

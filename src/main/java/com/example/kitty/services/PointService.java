@@ -17,9 +17,10 @@ import java.util.UUID;
 public class PointService {
     private final PointRepository pointRepository;
     private final PointMapper groupMapper;
+    private final IdGenerator idGenerator;
 
     public Point createPoint(PointDto pointDto) {
-        return pointRepository.save(groupMapper.toModel(pointDto).setId(UUID.randomUUID().toString()));
+        return pointRepository.save(groupMapper.toModel(pointDto).setId(idGenerator.nextId()));
     }
 
     public List<Point> getPointsList() {
