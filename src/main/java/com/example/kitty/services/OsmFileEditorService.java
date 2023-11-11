@@ -92,7 +92,7 @@ public class OsmFileEditorService {
                 continue;
             }
             String obstacleValue = obstacle.getAttributes() != null && obstacle.getAttributes().stream()
-                .map(Attribute::getAttributeType).anyMatch(attributeType -> attributeType.equals(AttributeType.obstacleMarking)) ? "yes" : "no";
+                .map(Attribute::getAttributeType).anyMatch(attributeType -> attributeType.equals(AttributeType.obstacleMarking)) ? "no" : "yes";
 
 //            String rampValue = editedPoint.getRamp() != null ? (editedPoint.getRamp() ? "yes" : "no") : null;
 //            if (rampValue == null) {

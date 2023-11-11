@@ -2,6 +2,7 @@ package com.example.kitty.entities.mongo;
 
 import com.example.kitty.entities.enums.Category;
 import com.example.kitty.utils.GeoJsonDeserializer;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,6 +26,7 @@ import java.util.List;
 @NoArgsConstructor
 public class Point {
     @Id
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long id;
     private String name;
     @Indexed

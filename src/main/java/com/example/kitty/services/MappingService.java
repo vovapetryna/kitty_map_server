@@ -63,6 +63,18 @@ public class MappingService {
         });
     }
 
+    public void updateNameBasedOnCategory() {
+        pointRepository.findAll().parallelStream().forEach(point -> {
+            System.out.println("Updating names");
+            if (point.getName() == null || point.getName().isBlank()) {
+                if (point.getCategory() != null) {
+                    point.setName(point.getCategory().name());
+                    pointRepository.save(point);
+                }
+            }
+        });
+    }
+
     private Point mapInternalPointParameters(Point point) {
         if (point.getCategory() != null) {
             return point;

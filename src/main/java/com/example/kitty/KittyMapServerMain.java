@@ -68,7 +68,8 @@ public class KittyMapServerMain {
 //	@Bean
 //	public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
 //		return args -> {
-//			mappingService.updatePointsFeatures();
+////			mappingService.updatePointsFeatures();
+//            mappingService.updateNameBasedOnCategory();
 //			System.out.println("DONE");
 //		};
 //	}
