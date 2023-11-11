@@ -41,6 +41,7 @@ public class OsmFileEditorService {
 
     private final PointRepository pointRepository;
     private final S3Service s3Service;
+    private final GraphHopperService graphHopperService;
 
     public Boolean updateXmlFile() throws ParserConfigurationException, IOException, SAXException, TransformerException, XPathExpressionException {
         List<Point> editedRamps = pointRepository.findAllByWasEditedRampIsTrue();
@@ -142,6 +143,9 @@ public class OsmFileEditorService {
 
         System.out.println("Dropping previous cache");
         FileUtils.deleteDirectory(new File(routingFolderLocation + "/" + graphCacheName));
+
+        graphHopperService.close();
+        System.out.println("hopper closed");
 
         System.out.println("Uploading new osm version");
         s3Service.uploadLocalFileToStorage(osmFileName);

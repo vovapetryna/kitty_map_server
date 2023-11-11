@@ -125,4 +125,11 @@ public class GraphHopperService {
         System.out.println(sb);
     }
 
+    public void close() {
+        if (hopper != null) {
+            hopper.close();
+            hopper = null;
+        }
+    }
+
 }
