@@ -1,21 +1,14 @@
 package com.example.kitty;
 
+import com.example.kitty.repositories.PointRepository;
 import com.example.kitty.services.GraphHopperService;
-import com.example.kitty.services.LunParsingService;
 import com.example.kitty.services.MappingService;
+import com.example.kitty.services.OsmFileEditorService;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.tuple.Pair;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
-
-import java.util.List;
-import java.util.stream.StreamSupport;
 
 
 @SpringBootApplication
@@ -24,11 +17,11 @@ import java.util.stream.StreamSupport;
 @AutoConfiguration
 public class KittyMapServerMain {
 
-//    private final GraphHopperService graphHopperService;
-//
-//    private final MappingService mappingService;
-//
-//    private final LunParsingService lunParsingService;
+	private final GraphHopperService graphHopperService;
+	private final PointRepository pointRepository;
+	private final OsmFileEditorService osmFileEditorService;
+
+	private final MappingService mappingService;
 
     public static void main(String[] args) {
         SpringApplication.run(KittyMapServerMain.class, args);
@@ -53,15 +46,28 @@ public class KittyMapServerMain {
 //	@Bean
 //	public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
 //		return args -> {
-//			GeoJsonPoint from = new GeoJsonPoint(30.620930191509597, 50.39402865778816);
-//			GeoJsonPoint to = new GeoJsonPoint(30.518825271259313, 50.42281479982218);
-//			Pair<List<GeoJsonPoint>, Double> routingResults = graphHopperService.getRouteBetweenPoints(from, to);
-//			List<GeoJsonPoint> route = routingResults.getLeft();
-//			for (GeoJsonPoint point : route) {
-//				System.out.println(point.getY() + "," + point.getX() + ",");
+//			System.out.println("Started mapping good values");
+//
+//			List<Point> allPoints = pointRepository.findAll();
+//			for (Point point : allPoints){
+//				if (point.getRamp() != null && point.getRamp() && (point.getWheelchair() == null || point.getWheelchair().equals("no"))) {
+//					point.setWasEditedRamp(true);
+//					pointRepository.save(point);
+//				}
 //			}
-////            collectionToFile();
-////            System.out.println("saved");
+//
+//			System.out.println("Started refilling xml file");
+//			osmFileEditorService.updateXmlFile();
+//
+////			LatLong from = new LatLong(50.474493469372675, 30.44883216958482); //50.47429,30.44932
+////			LatLong to = new LatLong(50.47435, 30.44771);
+////			Pair<List<List<Double>>, Double> routingResults = graphHopperService.getRouteBetweenPoints(new LatLongPair(from, to));
+////			List<List<Double>> route = routingResults.getLeft();
+////			for (List<Double> coord : route) {
+////				System.out.println(coord.get(0) + "," + coord.get(1) + ",");
+////			}
+//
+//            System.out.println("saved");
 //		};
 //	}
 }

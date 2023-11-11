@@ -23,11 +23,16 @@ public class PointService {
     }
 
     public Point updatePoint(Point point) {
+        if (pointRepository.findById(point.getId()).isPresent()) {
+            if (pointRepository.findById(point.getId()).get().getRamp() != point.getRamp()) {
+                point.setWasEditedRamp(true);
+            }
+        }
         return pointRepository.save(point);
     }
 
     public void deletePoint(Long pointId) {
-        pointRepository.deleteById(pointId.toString());
+        pointRepository.deleteById(pointId);
     }
 
     public List<Point> getPointsList() {

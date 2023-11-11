@@ -35,6 +35,15 @@ public class Point {
     private Boolean bus_stop;
     private String shelter;
 
+    private Boolean wifi;
+    private Boolean hasToilets;
+    private String hasToiletWheelchair;
+    private Boolean steps;
+    private Boolean ramp;
+
+    private Boolean wasEditedRamp;
+    private Long wayId;
+
     @GeoSpatialIndexed(type = GeoSpatialIndexType.GEO_2DSPHERE)
     private GeoJsonPoint location;
 }

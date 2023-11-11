@@ -6,7 +6,6 @@ import com.example.kitty.entities.mongo.Attribute;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.experimental.Accessors;
-import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 
 import java.util.List;
 
@@ -20,4 +19,12 @@ public class PointDto {
     private List<Attribute> attributes;
     private String subCategory;
     private String description;
+    private Boolean wifi;
+    private Boolean hasToilets;
+    private String hasToiletWheelchair;
+    private Boolean steps;
+    private Boolean ramp;
+
+    private Boolean wasEditedRamp = false;
+    private Long wayId;
 }

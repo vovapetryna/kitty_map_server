@@ -1,6 +1,5 @@
 package com.example.kitty.services;
 
-import com.example.kitty.entities.LatLong;
 import com.example.kitty.entities.LatLongPair;
 import com.graphhopper.GHRequest;
 import com.graphhopper.GHResponse;
@@ -28,9 +27,10 @@ public class GraphHopperService {
 
     private GraphHopper hopper;
 
-    private final String routingFolderLocation = "routing";
-    private final String osmFileName = "roads_Kyiv.osm";
-    private final String graphCacheName = "kyivRoadsCache";
+    public final static String routingFolderLocation = "routing";
+    public final static String graphCacheName = "kyivRoadsCache";
+
+    public final static String osmFileName = "roads_Kyiv.osm";
 
     static List<List<Double>> convertPointListToWaypointList(PointList pointList) {
         List<List<Double>> wayPoints = new ArrayList<>();
