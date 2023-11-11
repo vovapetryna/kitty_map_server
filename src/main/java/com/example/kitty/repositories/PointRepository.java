@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.repository.Query;
 
 import java.util.List;
 
-public interface PointRepository extends MongoRepository<Point, Long> {
+public interface PointRepository extends MongoRepository<Point, Long>, PointCustomRepository {
     @Query(value = "{'category': { $ne: 'UNKNOWN' } }")
     List<Point> findAllTaggedWithCategory();
 

@@ -1,6 +1,7 @@
 package com.example.kitty.services;
 
 import com.example.kitty.dto.PointDto;
+import com.example.kitty.dto.PointFilterDto;
 import com.example.kitty.entities.mongo.Point;
 import com.example.kitty.mappers.PointMapper;
 import com.example.kitty.repositories.PointRepository;
@@ -17,6 +18,10 @@ public class PointService {
     private final PointRepository pointRepository;
     private final PointMapper pointMapper;
     private final IdGenerator idGenerator;
+
+    public List<Point> filterPoints(PointFilterDto pointFilterDto) {
+        return pointRepository.findAllPointsByTrainingFilterData(pointFilterDto);
+    }
 
     public Point createPoint(PointDto pointDto) {
         return pointRepository.save(pointMapper.toModel(pointDto).setId(idGenerator.nextId()));

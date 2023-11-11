@@ -1,6 +1,7 @@
 package com.example.kitty.controllers;
 
 import com.example.kitty.dto.PointDto;
+import com.example.kitty.dto.PointFilterDto;
 import com.example.kitty.entities.mongo.Point;
 import com.example.kitty.services.PointService;
 import lombok.RequiredArgsConstructor;
@@ -40,4 +41,10 @@ public class PointController {
         pointService.deletePoint(id);
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
+
+    @PostMapping(value = ControllerAPI.CONTROLLER_GENERAL_REQUEST + "/filter", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Point>> filter(@RequestBody PointFilterDto dto) {
+        return new ResponseEntity<>(pointService.filterPoints(dto), HttpStatus.OK);
+    }
+
 }

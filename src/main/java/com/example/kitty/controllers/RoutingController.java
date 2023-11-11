@@ -36,11 +36,10 @@ public class RoutingController {
         return new ResponseEntity<>(routingService.getRouteBetweenPoints(latLongPair).getKey(), HttpStatus.OK);
     }
 
-    @GetMapping(value = ControllerAPI.CONTROLLER_GENERAL_REQUEST + "reload", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = ControllerAPI.CONTROLLER_GENERAL_REQUEST + "/reload", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Boolean> updateGraphCache() throws XPathExpressionException, ParserConfigurationException, IOException, TransformerException, SAXException {
         Boolean wasUpdated = osmFileEditorService.updateXmlFile();
         return new ResponseEntity<>(wasUpdated, HttpStatus.OK);
     }
-
 
 }
