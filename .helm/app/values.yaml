@@ -10,7 +10,7 @@ values:
 
   cpu:
     request: 1000m
-    limit: 2000m
+    limit: 3500m
   memory:
     request: 2000Mi
     limit: 5000Mi
