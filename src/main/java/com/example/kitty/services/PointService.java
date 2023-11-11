@@ -32,7 +32,7 @@ public class PointService {
     public Point createPoint(PointDto pointDto) {
         Point point = pointMapper.toModel(pointDto).setId(idGenerator.nextId());
         if (checkIfObstacleIsPresent(point)) {
-            WayOsm wayBlocked = wayRepository.findFirstByWaylineNear(pointDto.getLocation().getLng(), pointDto.getLocation().getLat());
+            WayOsm wayBlocked = wayRepository.findFirstByWaylineNear(pointDto.getLocation().getX(), pointDto.getLocation().getY());
             if (wayBlocked != null) {
                 point.setWayId(wayBlocked.getId());
                 point.setWasEditedObstacle(true);
