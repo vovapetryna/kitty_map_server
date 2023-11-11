@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface WayOsmRepository extends MongoRepository<WayOsm, Long> {
 
-    @Query(value = "{'location': { $nearSphere: { $geometry: { type: 'Point', coordinates: [ ?0, ?1 ] }, $maxDistance: 3 } } }")
+    @Query(value = "{'wayline': { $nearSphere: { $geometry: { type: 'Point', coordinates: [ ?0, ?1 ] }, $maxDistance: 3 } } }")
     WayOsm findFirstByWaylineNear(double longitude, double latitude);
 
 }
