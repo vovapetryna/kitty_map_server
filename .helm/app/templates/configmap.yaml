@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-{{ .Values.values.name }}-configmap
+  namespace: prod
+data:
+  PORT: {{ .Values.values.port | quote }}
+
+  CLOUDCUBE_ACCESS_KEY_ID: {{ .Values.values.cloudcubeAccessKeyId | quote }}
+  CLOUDCUBE_SECRET_ACCESS_KEY: {{ .Values.values.cloudcubeSecretAccessKey | quote }}
+  CLOUDCUBE_URL: {{ .Values.values.cloudcubeUrl | quote }}
+

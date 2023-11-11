@@ -1,0 +1,103 @@
+version: 2.1
+
+orbs:
+  doctl: digitalocean/cli@0.1.1
+  jq: circleci/jq@2.2.0
+  docker: circleci/docker@2.0.1
+  helm: circleci/helm@1.2.0
+
+commands:
+  install-helm:
+    parameters:
+      version:
+        type: string
+    steps:
+      - run:
+          name: Get helm 3
+          command: |
+            curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+            chmod 700 get_helm.sh
+            DESIRED_VERSION=<< parameters.version >> VERIFY_CHECKSUM=false ./get_helm.sh
+            rm get_helm.sh
+
+  install-helm-chart:
+    parameters:
+      env:
+        type: string
+      values:
+        type: string
+      chart:
+        type: string
+      release-name:
+        type: string
+    steps:
+      - run:
+          name: Install chart << parameters.release-name >>
+          command: |
+            helm upgrade \
+            --namespace << parameters.env >> \
+            --kubeconfig ~/kubeconfig.yaml \
+            --install \
+            --create-namespace \
+            --values << parameters.values >> \
+            --set version="$CIRCLE_WORKFLOW_ID" \
+            << parameters.release-name >> \
+            << parameters.chart >>
+
+
+jobs:
+  build-and-publish:
+    docker:
+      - image: cimg/openjdk:17.0.9
+    steps:
+      - jq/install
+      - docker/install-docker
+      - setup_remote_docker:
+          version: 19.03.13
+      - doctl/install
+      - doctl/initialize
+      - checkout
+      - run:
+          name: Login to docker DO registry
+          command: doctl registry login
+      - run:
+          name: Build and Package with Maven
+          command: mvn clean package  # Execute Maven build and package
+      - run:
+          name: Build and Push docker image
+          command: |
+            docker build -t "registry.digitalocean.com/kitty-org/server:server-$CIRCLE_WORKFLOW_ID" .
+            docker push "registry.digitalocean.com/kitty-org/server:server-$CIRCLE_WORKFLOW_ID"
+
+  deploy-to-cluster:
+    working_directory: ~/project
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - install-helm:
+          version: v3.7.2
+      - run:
+          name: Create kubeconfig file
+          command: echo "$KUBECONFIG_DATA" | base64 --decode > ~/kubeconfig.yaml
+      - install-helm-chart:
+          env: prod
+          values: ./.helm/kitty-prod.yaml
+          chart: ./.helm/app
+          release-name: kitty-server
+
+workflows:
+  deploy-to-production:
+    jobs:
+      - build-and-publish:
+          filters:
+            branches:
+              only:
+                - main
+      - deploy-to-cluster:
+          filters:
+            branches:
+              only:
+                - main
+          requires:
+            - build-and-publish

@@ -1,0 +1,14 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ .Release.Name }}-{{ .Values.values.name }}
+  labels:
+    k8s-app: {{ .Release.Name }}-{{ .Values.values.name }}
+spec:
+  ports:
+    - port: {{ .Values.values.port }}
+      targetPort: {{ .Values.values.port }}
+      nodePort: {{ .Values.values.nodePort }}
+  type: NodePort
+  selector:
+    k8s-app: {{ .Release.Name }}-{{ .Values.values.name }}

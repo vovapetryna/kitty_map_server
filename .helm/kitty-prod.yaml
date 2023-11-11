@@ -1,0 +1,6 @@
+env: "prod"
+
+values:
+  name: "server"
+  port: "9008"
+  nodePort: 30008

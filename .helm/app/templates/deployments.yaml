@@ -1,0 +1,52 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: {{ .Release.Name }}-{{ .Values.values.name }}
+  labels:
+    k8s-app: {{ .Release.Name }}-{{ .Values.values.name }}
+spec:
+  replicas: {{ .Values.values.replicas }}
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      k8s-app: {{ .Release.Name }}-{{ .Values.values.name }}
+  template:
+    metadata:
+      labels:
+        k8s-app: {{ .Release.Name }}-{{ .Values.values.name }}
+    spec:
+      containers:
+        - name: {{ .Release.Name }}-{{ .Values.values.name }}
+          image: "registry.digitalocean.com/kitty-org/server:server-{{ .Values.version }}"
+          imagePullPolicy: Always
+          ports:
+            - name: {{ .Release.Name }}-{{ .Values.values.name }}
+              containerPort: {{ .Values.values.port }}
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}-{{ .Values.values.name }}-configmap
+          resources:
+            limits:
+              memory: {{ .Values.values.memory.limit }}
+              cpu: {{ .Values.values.cpu.limit }}
+            requests:
+              memory: {{ .Values.values.memory.request }}
+              cpu: {{ .Values.values.cpu.request }}
+          livenessProbe:
+            httpGet:
+              path: /api/v1/ping
+              port: {{ .Release.Name }}-{{ .Values.values.name }}
+            initialDelaySeconds: 20
+            periodSeconds: 20
+            failureThreshold: 2
+            timeoutSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /api/v1/ping
+              port: {{ .Release.Name }}-{{ .Values.values.name }}
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 3
+            timeoutSeconds: 20
+      imagePullSecrets:
+        - name: docker-kitty-org-cfg

@@ -1,0 +1,20 @@
+version: null
+
+env: null
+
+values:
+  name: null
+  port: null
+  nodePort: null
+  replicas: 1
+
+  cpu:
+    request: 1000m
+    limit: 2000m
+  memory:
+    request: 2GiB
+    limit: 5GiB
+
+  cloudcubeAccessKeyId: "AKIA37SVVXBHWN26UHWV"
+  cloudcubeSecretAccessKey: "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"
+  cloudcubeUrl: "https://cloud-cube-us2.s3.amazonaws.com/hs96ia033t8m"
