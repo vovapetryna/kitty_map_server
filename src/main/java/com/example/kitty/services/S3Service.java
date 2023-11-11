@@ -37,8 +37,10 @@ public class S3Service {
         return outputFile;
     }
 
-    public void uploadLocalFileToStorage(File file) {
-        System.out.println(amazonS3.putObject(STORAGE_BUCKET, CUBE_NAME + "/" + file.getName(), file));
+    public void uploadLocalFileToStorage(String objectName) {
+        File file = new File("." + File.separator + objectName);
+        System.out.println(file.getAbsolutePath());
+        System.out.println(amazonS3.putObject(STORAGE_BUCKET, CUBE_NAME + "/" + objectName, file));
     }
 
 }

@@ -144,7 +144,7 @@ public class OsmFileEditorService {
         FileUtils.deleteDirectory(new File(routingFolderLocation + "/" + graphCacheName));
 
         System.out.println("Uploading new osm version");
-        s3Service.uploadLocalFileToStorage(new File(osmFileName));
+        s3Service.uploadLocalFileToStorage(osmFileName);
 
         System.out.println("saved");
         return true;
