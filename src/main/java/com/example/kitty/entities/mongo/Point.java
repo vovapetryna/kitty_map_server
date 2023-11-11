@@ -1,6 +1,8 @@
 package com.example.kitty.entities.mongo;
 
 import com.example.kitty.entities.enums.Category;
+import com.example.kitty.utils.GeoJsonDeserializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -46,6 +48,7 @@ public class Point {
     private Boolean wasEditedRamp;
     private Long wayId;
 
+    @JsonDeserialize(using = GeoJsonDeserializer.class)
     @GeoSpatialIndexed(type = GeoSpatialIndexType.GEO_2DSPHERE)
     private GeoJsonPoint location;
 }

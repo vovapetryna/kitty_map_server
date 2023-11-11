@@ -31,9 +31,4 @@ public class AppConfig extends WebMvcConfigurationSupport {
                         .version("Version 0.1"));
     }
 
-    @Bean
-    public GeoJsonModule geoJsonModule() {
-        return new GeoJsonModule();
-    }
-
 }
