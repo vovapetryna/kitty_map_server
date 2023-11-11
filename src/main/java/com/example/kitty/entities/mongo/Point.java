@@ -2,6 +2,7 @@ package com.example.kitty.entities.mongo;
 
 import com.example.kitty.entities.enums.Category;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.springframework.data.annotation.Id;
@@ -17,6 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @Accessors(chain = true)
 @Data
+@Builder
 public class Point {
     @Id
     private Long id;

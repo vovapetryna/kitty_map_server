@@ -1,5 +1,6 @@
 package com.example.kitty.dto;
 
+import com.example.kitty.entities.LatLong;
 import com.example.kitty.entities.enums.Category;
 import com.example.kitty.entities.mongo.Attribute;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -15,7 +16,7 @@ import java.util.List;
 public class PointDto {
     private String name;
     private Category category;
-    private GeoJsonPoint location;
+    private LatLong location;
     private List<Attribute> attributes;
     private String subCategory;
     private String description;

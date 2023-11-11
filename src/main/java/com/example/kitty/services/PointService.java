@@ -15,11 +15,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PointService {
     private final PointRepository pointRepository;
-    private final PointMapper groupMapper;
+    private final PointMapper pointMapper;
     private final IdGenerator idGenerator;
 
     public Point createPoint(PointDto pointDto) {
-        return pointRepository.save(groupMapper.toModel(pointDto).setId(idGenerator.nextId()));
+        return pointRepository.save(pointMapper.toModel(pointDto).setId(idGenerator.nextId()));
     }
 
     public Point updatePoint(Point point) {
