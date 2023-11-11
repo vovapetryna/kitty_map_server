@@ -25,7 +25,6 @@ public class S3Service {
             return outputFile;
         }
 
-
         S3Object s3object = amazonS3.getObject(STORAGE_BUCKET, CUBE_NAME + "/" + objectName);
         S3ObjectInputStream inputStream = s3object.getObjectContent();
 
@@ -36,6 +35,10 @@ public class S3Service {
         }
 
         return outputFile;
+    }
+
+    public void uploadLocalFileToStorage(File file) {
+        System.out.println(amazonS3.putObject(STORAGE_BUCKET, CUBE_NAME + "/" + file.getName(), file));
     }
 
 }

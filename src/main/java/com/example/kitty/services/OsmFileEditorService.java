@@ -38,6 +38,7 @@ import static com.example.kitty.services.GraphHopperService.routingFolderLocatio
 public class OsmFileEditorService {
 
     private final PointRepository pointRepository;
+    private final S3Service s3Service;
 
     public Boolean updateXmlFile() throws ParserConfigurationException, IOException, SAXException, TransformerException, XPathExpressionException {
         List<Point> editedRamps = pointRepository.findAllByWasEditedRampIsTrue();
@@ -57,7 +58,7 @@ public class OsmFileEditorService {
                 continue;
             }
             String rampValue = editedPoint.getAttributes() != null && editedPoint.getAttributes().stream()
-                .map(Attribute::getAttributeType).anyMatch(attributeType -> attributeType.equals(AttributeType.ramp)) ? "yes" : "no";
+                    .map(Attribute::getAttributeType).anyMatch(attributeType -> attributeType.equals(AttributeType.ramp)) ? "yes" : "no";
 
 //            String rampValue = editedPoint.getRamp() != null ? (editedPoint.getRamp() ? "yes" : "no") : null;
 //            if (rampValue == null) {
@@ -98,6 +99,9 @@ public class OsmFileEditorService {
 
         System.out.println("Dropping previous cache");
         FileUtils.deleteDirectory(new File(routingFolderLocation + "/" + graphCacheName));
+
+        System.out.println("Uploading new osm version");
+        s3Service.uploadLocalFileToStorage(new File(osmFileName));
 
         System.out.println("saved");
         return true;
