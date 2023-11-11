@@ -9,10 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -67,6 +64,10 @@ public class MappingService {
     }
 
     private Point mapInternalPointParameters(Point point) {
+        if (point.getCategory() != null) {
+            return point;
+        }
+
         point.setCategory(getCategoryFromPoint(point));
         point.setAttributes(getAttributesFromPoint(point));
         point.setSubCategory(point.getAmenity());
@@ -74,7 +75,11 @@ public class MappingService {
     }
 
     private Category getCategoryFromPoint(Point point) {
-        if (point.getBus_stop()) {
+        if (point.getSteps() != null && point.getSteps()) {
+            return Category.infrastructure;
+        }
+
+        if (point.getBus_stop() != null && point.getBus_stop()) {
             return Category.busStop;
         }
 
@@ -90,6 +95,15 @@ public class MappingService {
         getWheelchairAttribute(point)
                 .ifPresent(attributes::add);
 
+        getWiFiAttribute(point)
+                .ifPresent(attributes::add);
+
+        getSanitaryAttribute(point)
+                .ifPresent(attributes::add);
+
+        getRampAttribute(point)
+                .ifPresent(attributes::add);
+
         return attributes;
     }
 
@@ -99,10 +113,38 @@ public class MappingService {
                 .map(w -> switch (w) {
                     case "yes", "limited" -> AttributeType.wheelchairYes;
                     case "no" -> AttributeType.wheelchairNo;
-                    case "assisted" -> AttributeType.wheelchairAssistance;
+                    case "assisted" -> AttributeType.accompanying;
                     default -> AttributeType.unknown;
                 })
                 .filter(attr -> attr != AttributeType.unknown)
+                .map(Attribute::new);
+    }
+
+    private Optional<Attribute> getWiFiAttribute(Point point) {
+        return Optional.ofNullable(point.getWifi())
+                .map(hasWiFi -> AttributeType.wiFi)
+                .map(Attribute::new);
+    }
+
+    private Optional<Attribute> getSanitaryAttribute(Point point) {
+        if (point.getHasToiletWheelchair() != null &&
+                Objects.equals(point.getHasToiletWheelchair(), "yes")) {
+            return Optional.of(new Attribute(AttributeType.sanitaryAndHygienicPremises));
+        }
+
+        if (point.getHasToilets() != null &&
+                point.getHasToilets() &&
+                point.getWheelchair() != null &&
+                !Objects.equals(point.getWheelchair(), "no")) {
+            return Optional.of(new Attribute(AttributeType.sanitaryAndHygienicPremises));
+        }
+
+        return Optional.empty();
+    }
+
+    private Optional<Attribute> getRampAttribute(Point point) {
+        return Optional.ofNullable(point.getRamp())
+                .map(r -> AttributeType.ramp)
                 .map(Attribute::new);
     }
 }

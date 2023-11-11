@@ -70,7 +70,11 @@ public class LunParsingService {
                         e.printStackTrace();
                     }
 
-                    var rawPoint = new RawPoint(idGenerator.nextId(), jsonData, new GeoJsonPoint(lon, lat));
+                    var rawPoint = RawPoint.builder()
+                            .id(idGenerator.nextId())
+                            .userDataJson(jsonData)
+                            .location(new GeoJsonPoint(lon, lat))
+                            .build();
                     rawPointRepository.save(rawPoint);
                 });
 

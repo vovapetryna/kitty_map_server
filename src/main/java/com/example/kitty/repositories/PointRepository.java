@@ -1,6 +1,7 @@
 package com.example.kitty.repositories;
 
 import com.example.kitty.entities.mongo.Point;
+import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
@@ -11,4 +12,7 @@ public interface PointRepository extends MongoRepository<Point, Long>, PointCust
     List<Point> findAllTaggedWithCategory();
 
     List<Point> findAllByWasEditedRampIsTrue();
+
+    @Query(value = "{'location': { $nearSphere: { $geometry: { type: 'Point', coordinates: [ ?0, ?1 ] }, $maxDistance: 1 } } }")
+    List<Point> findNearest(double longitude, double latitude);
 }

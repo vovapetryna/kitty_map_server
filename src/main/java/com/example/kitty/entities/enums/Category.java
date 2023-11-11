@@ -17,6 +17,7 @@ public enum Category {
     entertainment,
     busStop,
     infrastructure,
+    parks,
     ;
 
 }

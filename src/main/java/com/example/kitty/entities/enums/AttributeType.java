@@ -24,5 +24,6 @@ public enum AttributeType {
     accompanying,
     wiFi,
     signLanguageTranslation,
+    workingWithoutLight,
     ;
 }
