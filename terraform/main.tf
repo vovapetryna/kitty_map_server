@@ -31,9 +31,9 @@ resource "digitalocean_project" "project" {
   resources   = concat(module.do_k8s.all_resources_urns)
 }
 
-#module "do_k8s_config" {
-#  source           = "./modules/do_k8s_config"
-#  k8s_cluster_name = var.cluster_params.cluster_name
-#  environment      = var.environment
-#  registry         = module.do_registry.do_registry_credentials
-#}
+module "do_k8s_config" {
+  source           = "./modules/do_k8s_config"
+  k8s_cluster_name = var.cluster_params.cluster_name
+  environment      = var.environment
+  registry         = module.do_registry.do_registry_credentials
+}
