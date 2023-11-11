@@ -62,11 +62,11 @@ jobs:
           command: doctl registry login
       - run:
           name: Build and Package with Maven
-          command: mvn clean package  # Execute Maven build and package
+          command: mvn spring-boot:build-image  # Execute Maven build and package
       - run:
-          name: Build and Push docker image
+          name: Tag and Push docker image
           command: |
-            docker build -t "registry.digitalocean.com/kitty-org/server:server-$CIRCLE_WORKFLOW_ID" .
+            docker tag "docker.io/library/sampleimage:latest" "registry.digitalocean.com/kitty-org/server:server-$CIRCLE_WORKFLOW_ID"
             docker push "registry.digitalocean.com/kitty-org/server:server-$CIRCLE_WORKFLOW_ID"
 
   deploy-to-cluster:
