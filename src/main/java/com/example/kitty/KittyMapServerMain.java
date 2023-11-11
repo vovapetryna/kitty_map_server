@@ -1,6 +1,7 @@
 package com.example.kitty;
 
 import com.example.kitty.services.GraphHopperService;
+import com.example.kitty.services.LunParsingService;
 import com.example.kitty.services.MappingService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.tuple.Pair;
@@ -23,13 +24,23 @@ import java.util.stream.StreamSupport;
 @AutoConfiguration
 public class KittyMapServerMain {
 
-	private final GraphHopperService graphHopperService;
+//    private final GraphHopperService graphHopperService;
+//
+//    private final MappingService mappingService;
+//
+//    private final LunParsingService lunParsingService;
 
-	private final MappingService mappingService;
+    public static void main(String[] args) {
+        SpringApplication.run(KittyMapServerMain.class, args);
+    }
 
-	public static void main(String[] args) {
-		SpringApplication.run(KittyMapServerMain.class, args);
-	}
+//    @Bean
+//    public CommandLineRunner getLUNData(ApplicationContext ctx) {
+//        return args -> {
+//            System.out.println(lunParsingService.getGeoFromTiles(12, 2395, 1380));
+//            lunParsingService.getTilesData();
+//        };
+//    }
 
 //	@Bean
 //	public CommandLineRunner commandLineRunner(ApplicationContext ctx) {

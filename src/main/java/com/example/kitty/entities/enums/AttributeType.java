@@ -1,9 +1,28 @@
 package com.example.kitty.entities.enums;
 
 public enum AttributeType {
-    UNKNOWN,
-    WHEELCHAIR_YES,
-    WHEELCHAIR_NO,
-    WHEELCHAIR_ASSISTANCE,
+    unknown,
+    wheelchairYes,
+    wheelchairNo,
+    wheelchairAssistance,
+    parking,
+    ramp,
+    lowInput,
+    liftingEquipment,
+    cargoLift,
+    freightElevator,
+    sanitaryAndHygienicPremises,
+    shelter,
+    roomForCare,
+    childrenRoom,
+    adaptedNotificationSystems,
+    tactileElementsOfAccessibility,
+    visualElementsOfAccessibility,
+    soundSignalsOfTrafficLights,
+    obstacleMarking,
+    tactileRoute,
+    accompanying,
+    wiFi,
+    signLanguageTranslation,
     ;
 }
