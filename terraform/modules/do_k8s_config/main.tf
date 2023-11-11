@@ -19,11 +19,11 @@ provider "kubernetes" {
   )
 }
 
-#resource "kubernetes_namespace" "namespace" {
-#  metadata {
-#    name = var.environment
-#  }
-#}
+resource "kubernetes_namespace" "namespace" {
+  metadata {
+    name = var.environment
+  }
+}
 
 resource "kubernetes_secret" "basic_registry_readonly_secrets" {
   for_each = var.registry
