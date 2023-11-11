@@ -32,7 +32,9 @@ public class PointCustomRepositoryImpl implements PointCustomRepository {
             criteria.add(Criteria.where("attributes").all(attributes));
         }
 
-        query.addCriteria(new Criteria().andOperator(criteria));
+        if (!criteria.isEmpty()) {
+            query.addCriteria(new Criteria().andOperator(criteria));
+        }
 
         return mongoTemplate.find(query, Point.class);
     }
