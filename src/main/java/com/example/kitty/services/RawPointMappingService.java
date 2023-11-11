@@ -7,10 +7,12 @@ import com.example.kitty.entities.mongo.Point;
 import com.example.kitty.entities.mongo.RawPoint;
 import com.example.kitty.repositories.PointRepository;
 import com.example.kitty.repositories.RawPointRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -85,8 +87,6 @@ public class RawPointMappingService {
 
     public void mergeIntoCorePointIndex() {
         rawPointRepository.findAll().parallelStream().forEach(point -> {
-//            System.out.println("Updating point");
-
             var nearestPoints = pointRepository.findNearest(point.getLocation().getX(), point.getLocation().getY());
             if (nearestPoints.size() > 0) {
                 var nearestPoint = nearestPoints.get(0);
@@ -97,14 +97,13 @@ public class RawPointMappingService {
             } else {
                 pointRepository.save(Point.builder()
                         .id(point.getId())
-                                .category(point.getReadyCategory())
-                                .attributes(point.getReadyAttributes())
-//                                .description(point.get)
+                        .category(point.getReadyCategory())
+                        .attributes(point.getReadyAttributes())
+                        .name(point.getName())
+                        .location(point.getLocation())
                         .build()
                 );
             }
-
-//            pointRepository.save(mapInternalPointParameters(point));
         });
     }
 
@@ -113,6 +112,7 @@ public class RawPointMappingService {
             point.setReadyCategory(getPointCategory(point));
             point.setFilteredAttributes(getFilteredCategories(point));
             point.setReadyAttributes(point.getFilteredAttributes().stream().map(Attribute::new).toList());
+            point.setName(getName(point));
             rawPointRepository.save(point);
         });
     }
@@ -134,8 +134,15 @@ public class RawPointMappingService {
                 .filter(attr -> attr != AttributeType.unknown).toList();
     }
 
-//    private String getName(RawPoint point) {
-//        point.getUserDataJson();
-//    }
+    private String getName(RawPoint point) {
+        try {
+            var result = new ObjectMapper().readValue(point.getUserDataJson(), HashMap.class);
+            var id = result.get("id");
+            return (id != null) ? id.toString() : "";
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
 
 }
