@@ -12,8 +12,8 @@ values:
     request: 1000m
     limit: 2000m
   memory:
-    request: 2GiB
-    limit: 5GiB
+    request: 2Gb
+    limit: 5Gb
 
   cloudcubeAccessKeyId: "AKIA37SVVXBHWN26UHWV"
   cloudcubeSecretAccessKey: "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"

@@ -84,7 +84,7 @@ jobs:
           env: prod
           values: ./.helm/kitty-prod.yaml
           chart: ./.helm/app
-          release-name: kitty-server
+          release-name: kitty
 
 workflows:
   deploy-to-production:
