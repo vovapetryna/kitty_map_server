@@ -2,6 +2,8 @@ package com.example.kitty.services;
 
 import com.example.kitty.dto.PointDto;
 import com.example.kitty.dto.PointFilterDto;
+import com.example.kitty.entities.enums.AttributeType;
+import com.example.kitty.entities.mongo.Attribute;
 import com.example.kitty.entities.mongo.Point;
 import com.example.kitty.mappers.PointMapper;
 import com.example.kitty.repositories.PointRepository;
@@ -27,9 +29,15 @@ public class PointService {
         return pointRepository.save(pointMapper.toModel(pointDto).setId(idGenerator.nextId()));
     }
 
+    private boolean checkIfRampIsPresent(Point point){
+        return point.getAttributes() != null && point.getAttributes().stream()
+            .map(Attribute::getAttributeType).anyMatch(attributeType -> attributeType.equals(AttributeType.ramp));
+    }
+
     public Point updatePoint(Point point) {
         if (pointRepository.findById(point.getId()).isPresent()) {
-            if (pointRepository.findById(point.getId()).get().getRamp() != point.getRamp()) {
+            if (checkIfRampIsPresent(pointRepository.findById(point.getId()).get()) != checkIfRampIsPresent(point)
+                && point.getWayId() != null) {
                 point.setWasEditedRamp(true);
             }
         }

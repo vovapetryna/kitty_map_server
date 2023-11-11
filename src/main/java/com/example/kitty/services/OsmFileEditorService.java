@@ -1,5 +1,7 @@
 package com.example.kitty.services;
 
+import com.example.kitty.entities.enums.AttributeType;
+import com.example.kitty.entities.mongo.Attribute;
 import com.example.kitty.entities.mongo.Point;
 import com.example.kitty.repositories.PointRepository;
 import lombok.RequiredArgsConstructor;
@@ -54,10 +56,13 @@ public class OsmFileEditorService {
             if (editedPoint.getWayId() == null) {
                 continue;
             }
-            String rampValue = editedPoint.getRamp() != null ? (editedPoint.getRamp() ? "yes" : "no") : null;
-            if (rampValue == null) {
-                continue;
-            }
+            String rampValue = editedPoint.getAttributes() != null && editedPoint.getAttributes().stream()
+                .map(Attribute::getAttributeType).anyMatch(attributeType -> attributeType.equals(AttributeType.ramp)) ? "yes" : "no";
+
+//            String rampValue = editedPoint.getRamp() != null ? (editedPoint.getRamp() ? "yes" : "no") : null;
+//            if (rampValue == null) {
+//                continue;
+//            }
             XPath xPath = XPathFactory.newInstance().newXPath();
             String expression = "/osm/way[@id=\"%d\"]/tag[@k=\"wheelchair\"]".formatted(editedPoint.getWayId());
             Node wheelchairInfo = (Node) xPath.compile(expression).evaluate(doc, XPathConstants.NODE);
