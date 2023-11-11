@@ -30,7 +30,7 @@ public class GraphHopperService {
     public final static String routingFolderLocation = "routing";
     public final static String graphCacheName = "kyivRoadsCache";
 
-    public final static String osmFileName = "roads_Kyiv.osm";
+    public final static String osmFileName = "roads_kyiv.osm";
 
     static List<List<Double>> convertPointListToWaypointList(PointList pointList) {
         List<List<Double>> wayPoints = new ArrayList<>();
