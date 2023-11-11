@@ -46,6 +46,8 @@ public class Point {
     private Boolean ramp;
 
     private Boolean wasEditedRamp;
+    private Boolean wasEditedObstacle;
+
     private Long wayId;
 
     @JsonDeserialize(using = GeoJsonDeserializer.class)

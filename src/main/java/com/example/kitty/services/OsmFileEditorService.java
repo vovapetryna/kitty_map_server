@@ -27,7 +27,9 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static com.example.kitty.services.GraphHopperService.graphCacheName;
 import static com.example.kitty.services.GraphHopperService.osmFileName;
@@ -42,8 +44,10 @@ public class OsmFileEditorService {
 
     public Boolean updateXmlFile() throws ParserConfigurationException, IOException, SAXException, TransformerException, XPathExpressionException {
         List<Point> editedRamps = pointRepository.findAllByWasEditedRampIsTrue();
+        List<Point> editedObstacle = pointRepository.findAllByWasEditedObstacleIsTrue();
 
-        if (editedRamps.isEmpty()) {
+
+        if (editedRamps.isEmpty() && editedObstacle.isEmpty()) {
             System.out.println("Nothing to save");
             return false;
         }
@@ -53,6 +57,7 @@ public class OsmFileEditorService {
         Document doc = b.parse(new File(osmFileName));
 
         System.out.println("Started updating xml file");
+
         for (Point editedPoint : editedRamps) {
             if (editedPoint.getWayId() == null) {
                 continue;
@@ -81,6 +86,34 @@ public class OsmFileEditorService {
             }
         }
 
+        for (Point obstacle : editedObstacle) {
+            if (obstacle.getWayId() == null) {
+                continue;
+            }
+            String obstacleValue = obstacle.getAttributes() != null && obstacle.getAttributes().stream()
+                .map(Attribute::getAttributeType).anyMatch(attributeType -> attributeType.equals(AttributeType.obstacleMarking)) ? "yes" : "no";
+
+//            String rampValue = editedPoint.getRamp() != null ? (editedPoint.getRamp() ? "yes" : "no") : null;
+//            if (rampValue == null) {
+//                continue;
+//            }
+            XPath xPath = XPathFactory.newInstance().newXPath();
+            String expression = "/osm/way[@id=\"%d\"]/tag[@k=\"foot\"]".formatted(obstacle.getWayId());
+            Node wheelchairInfo = (Node) xPath.compile(expression).evaluate(doc, XPathConstants.NODE);
+            if (wheelchairInfo == null) {
+                xPath = XPathFactory.newInstance().newXPath();
+                expression = "/osm/way[@id=\"%d\"]".formatted(obstacle.getWayId());
+                wheelchairInfo = (Node) xPath.compile(expression).evaluate(doc, XPathConstants.NODE);
+                Element tag = doc.createElement("tag");
+                tag.setAttribute("k", "foot");
+                tag.setAttribute("v", obstacleValue);
+                wheelchairInfo.appendChild(tag);
+                //get().getNamedItem("v").setNodeValue("no");
+            } else {
+                wheelchairInfo.getAttributes().getNamedItem("v").setNodeValue(obstacleValue);
+            }
+        }
+
         System.out.println("Started writing changes to file");
 
         Transformer tf = TransformerFactory.newInstance().newTransformer();
@@ -92,8 +125,18 @@ public class OsmFileEditorService {
         StreamResult sr = new StreamResult(new File(osmFileName));
         tf.transform(domSource, sr);
 
+        Set<Long> savedPoints = new HashSet<>();
         for (Point editedPoint : editedRamps) {
             editedPoint.setWasEditedRamp(false);
+            pointRepository.save(editedPoint);
+            savedPoints.add(editedPoint.getId());
+        }
+
+        for (Point editedPoint : editedObstacle) {
+            if (savedPoints.contains(editedPoint.getId())){
+                editedPoint = pointRepository.findById(editedPoint.getId()).get();
+            }
+            editedPoint.setWasEditedObstacle(false);
             pointRepository.save(editedPoint);
         }
 
