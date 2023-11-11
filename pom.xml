@@ -93,8 +93,8 @@
 
 		<dependency>
 			<groupId>software.amazon.awssdk</groupId>
-			<artifactId>aws-sdk-java</artifactId>
-			<version>2.21.21</version>
+			<artifactId>s3</artifactId>
+			<version>2.21.20</version>
 		</dependency>
     </dependencies>
 

@@ -32,8 +32,10 @@ public class PointService {
     public Point createPoint(PointDto pointDto) {
         Point point = pointMapper.toModel(pointDto).setId(idGenerator.nextId());
         if (checkIfObstacleIsPresent(point)) {
+            System.out.printf("finding wat for point %s \n", point.getId());
             WayOsm wayBlocked = wayRepository.findFirstByWaylineNear(pointDto.getLocation().getX(), pointDto.getLocation().getY());
             if (wayBlocked != null) {
+                System.out.printf("found way %s \n", wayBlocked.getId());
                 point.setWayId(wayBlocked.getId());
                 point.setWasEditedObstacle(true);
             }
@@ -48,19 +50,13 @@ public class PointService {
 
     private boolean checkIfObstacleIsPresent(Point obstacle) {
         return obstacle.getAttributes() != null && obstacle.getAttributes().stream()
-            .map(Attribute::getAttributeType).anyMatch(attributeType -> attributeType.equals(AttributeType.obstacleMarking));
+                .map(Attribute::getAttributeType).anyMatch(attributeType -> attributeType.equals(AttributeType.obstacleMarking));
     }
 
     public Point updatePoint(Point point) {
         var pointOption = pointRepository.findById(point.getId());
 
         return pointOption.map(p -> {
-            p.setCategory(point.getCategory());
-            p.setAttributes(point.getAttributes());
-            p.setLocation(point.getLocation());
-            p.setName(point.getName());
-            p.setDescription(point.getDescription());
-
             if (checkIfRampIsPresent(p) != checkIfRampIsPresent(point)
                     && p.getWayId() != null) {
                 p.setWasEditedRamp(true);
@@ -75,6 +71,12 @@ public class PointService {
                     p.setWasEditedObstacle(true);
                 }
             }
+
+            p.setCategory(point.getCategory());
+            p.setAttributes(point.getAttributes());
+            p.setLocation(point.getLocation());
+            p.setName(point.getName());
+            p.setDescription(point.getDescription());
 
             return pointRepository.save(p);
         }).orElseGet(() -> pointRepository.save(point));
