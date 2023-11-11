@@ -3,13 +3,13 @@ package com.example.kitty.services;
 import com.example.kitty.entities.enums.AttributeType;
 import com.example.kitty.entities.enums.Category;
 import com.example.kitty.entities.mongo.Attribute;
+import com.example.kitty.entities.mongo.Point;
 import com.example.kitty.entities.mongo.RawPoint;
 import com.example.kitty.repositories.PointRepository;
 import com.example.kitty.repositories.RawPointRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.w3c.dom.Attr;
 
 import java.util.List;
 import java.util.Map;
@@ -83,15 +83,26 @@ public class RawPointMappingService {
             Map.entry("public WiFi", AttributeType.wiFi)
     );
 
-    public void updatePointsFeatures() {
+    public void mergeIntoCorePointIndex() {
         rawPointRepository.findAll().parallelStream().forEach(point -> {
-            System.out.println("Updating point");
+//            System.out.println("Updating point");
 
-//            var nearestPoints = pointRepository.findNearest(point.getLocation().getX(), point.getLocation().getY());
-//            if (nearestPoints.size() > 0) {
-//                var nearestPoint = nearestPoints.get(0);
-//                nearestPoint.setAttributes(nearestPoint.getAttributes().addAll(point.))
-//            }
+            var nearestPoints = pointRepository.findNearest(point.getLocation().getX(), point.getLocation().getY());
+            if (nearestPoints.size() > 0) {
+                var nearestPoint = nearestPoints.get(0);
+                var attributes = nearestPoint.getAttributes();
+                attributes.addAll(point.getReadyAttributes());
+                nearestPoint.setAttributes(attributes);
+                pointRepository.save(nearestPoint);
+            } else {
+                pointRepository.save(Point.builder()
+                        .id(point.getId())
+                                .category(point.getReadyCategory())
+                                .attributes(point.getReadyAttributes())
+//                                .description(point.get)
+                        .build()
+                );
+            }
 
 //            pointRepository.save(mapInternalPointParameters(point));
         });
@@ -122,5 +133,9 @@ public class RawPointMappingService {
                 .map(attr -> fromAIAttribute.getOrDefault(attr, AttributeType.unknown))
                 .filter(attr -> attr != AttributeType.unknown).toList();
     }
+
+//    private String getName(RawPoint point) {
+//        point.getUserDataJson();
+//    }
 
 }

@@ -4,6 +4,7 @@ import com.example.kitty.entities.enums.Category;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
@@ -19,6 +20,7 @@ import java.util.List;
 @Accessors(chain = true)
 @Data
 @Builder
+@NoArgsConstructor
 public class Point {
     @Id
     private Long id;

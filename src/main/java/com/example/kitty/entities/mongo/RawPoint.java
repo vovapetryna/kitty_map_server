@@ -29,6 +29,7 @@ public class RawPoint {
     private List<String> attributes;
     private List<AttributeType> filteredAttributes;
     private List<Attribute> readyAttributes;
+    private String name;
 
     @GeoSpatialIndexed(type = GeoSpatialIndexType.GEO_2DSPHERE)
     private GeoJsonPoint location;

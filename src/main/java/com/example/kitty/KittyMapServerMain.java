@@ -42,6 +42,14 @@ public class KittyMapServerMain {
 //    @Bean
 //    public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
 //        return args -> {
+//            rawPointMappingService.mergeIntoCorePointIndex();
+//            System.out.println("DONE");
+//        };
+//    }
+
+//    @Bean
+//    public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
+//        return args -> {
 //            rawPointMappingService.groupPointFeatures();
 //            System.out.println("DONE");
 //        };

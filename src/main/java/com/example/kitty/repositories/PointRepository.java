@@ -13,6 +13,6 @@ public interface PointRepository extends MongoRepository<Point, Long>, PointCust
 
     List<Point> findAllByWasEditedRampIsTrue();
 
-    @Query(value = "{'location': { $nearSphere: { $geometry: { type: 'Point', coordinates: [ ?0, ?1 ] }, $maxDistance: 1 } } }")
+    @Query(value = "{'location': { $nearSphere: { $geometry: { type: 'Point', coordinates: [ ?0, ?1 ] }, $maxDistance: 1.5 } } }")
     List<Point> findNearest(double longitude, double latitude);
 }
