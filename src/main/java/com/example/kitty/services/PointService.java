@@ -29,19 +29,28 @@ public class PointService {
         return pointRepository.save(pointMapper.toModel(pointDto).setId(idGenerator.nextId()));
     }
 
-    private boolean checkIfRampIsPresent(Point point){
+    private boolean checkIfRampIsPresent(Point point) {
         return point.getAttributes() != null && point.getAttributes().stream()
-            .map(Attribute::getAttributeType).anyMatch(attributeType -> attributeType.equals(AttributeType.ramp));
+                .map(Attribute::getAttributeType).anyMatch(attributeType -> attributeType.equals(AttributeType.ramp));
     }
 
     public Point updatePoint(Point point) {
-        if (pointRepository.findById(point.getId()).isPresent()) {
-            if (checkIfRampIsPresent(pointRepository.findById(point.getId()).get()) != checkIfRampIsPresent(point)
-                && point.getWayId() != null) {
-                point.setWasEditedRamp(true);
+        var pointOption = pointRepository.findById(point.getId());
+
+        return pointOption.map(p -> {
+            p.setCategory(point.getCategory());
+            p.setAttributes(point.getAttributes());
+            p.setLocation(point.getLocation());
+            p.setName(point.getName());
+            p.setDescription(point.getDescription());
+
+            if (checkIfRampIsPresent(p) != checkIfRampIsPresent(point)
+                    && p.getWayId() != null) {
+                p.setWasEditedRamp(true);
             }
-        }
-        return pointRepository.save(point);
+
+            return pointRepository.save(p);
+        }).orElseGet(() -> pointRepository.save(point));
     }
 
     public void deletePoint(Long pointId) {
