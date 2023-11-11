@@ -30,13 +30,10 @@ public class AppConfig extends WebMvcConfigurationSupport {
                         .description("UavSim Instructor service")
                         .version("Version 0.1"));
     }
-    
-    @Override
-    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        ObjectMapper objectMapper = Jackson2ObjectMapperBuilder.json()
-                .modules(new GeoJsonModule())
-                .build();
-        converters.add(new MappingJackson2HttpMessageConverter(objectMapper));
+
+    @Bean
+    public GeoJsonModule geoJsonModule() {
+        return new GeoJsonModule();
     }
 
 }
