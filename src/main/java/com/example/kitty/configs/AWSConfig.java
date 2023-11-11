@@ -1,27 +1,26 @@
 package com.example.kitty.configs;
 
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.regions.Regions;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.AwsCredentials;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.S3ClientBuilder;
 
 @Configuration
 public class AWSConfig {
     @Bean
-    public AmazonS3 amazonS3() {
+    public S3Client amazonS3() {
         String accessKey = System.getenv("CLOUDCUBE_ACCESS_KEY_ID");
         String secretKey = System.getenv("CLOUDCUBE_SECRET_ACCESS_KEY");
 
-        AWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
+        AwsCredentials credentials = AwsBasicCredentials.create(accessKey, secretKey);
 
-        AmazonS3 s3client = AmazonS3ClientBuilder
-                .standard()
-                .withCredentials(new AWSStaticCredentialsProvider(credentials))
-                .withRegion(Regions.US_EAST_1)
+        S3Client s3client = S3Client.builder()
+                .credentialsProvider(StaticCredentialsProvider.create(credentials))
+                .region(Region.US_EAST_1)
                 .build();
         return s3client;
     }
