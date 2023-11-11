@@ -9,7 +9,6 @@ import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import java.io.IOException;
 
 public class GeoJsonDeserializer extends JsonDeserializer<GeoJsonPoint> {
-
     private final static String GEOJSON_TYPE_POINT = "Point";
 
     private final static String JSON_KEY_GEOJSON_TYPE = "type";
@@ -20,6 +19,7 @@ public class GeoJsonDeserializer extends JsonDeserializer<GeoJsonPoint> {
     public GeoJsonPoint deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
 
         final JsonNode tree = jp.getCodec().readTree(jp);
+        System.out.println(tree);
         final String type = tree.get(JSON_KEY_GEOJSON_TYPE).asText();
         final JsonNode coordsNode = tree.get(JSON_KEY_GEOJSON_COORDS);
 
