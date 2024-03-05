@@ -20,7 +20,7 @@ public class AWSConfig {
 
         S3Client s3client = S3Client.builder()
                 .credentialsProvider(StaticCredentialsProvider.create(credentials))
-                .region(Region.US_EAST_1)
+                .region(Region.EU_WEST_1)
                 .build();
         return s3client;
     }
