@@ -10,12 +10,13 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class S3Service {
-    private final String STORAGE_BUCKET = "cloud-cube-us2";
-    private final String CUBE_NAME = "hs96ia033t8m";
+    private final String STORAGE_BUCKET = Optional.ofNullable(System.getenv("STORAGE_BUCKET")).orElse("cloud-cube-eu2");
+    private final String CUBE_NAME = Optional.ofNullable(System.getenv("CUBE_NAME")).orElse("kowt1ftgxch6");
     private final S3Client amazonS3;
 
     public File downloadFileToLocalStorage(String objectName) {
