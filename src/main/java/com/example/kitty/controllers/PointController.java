@@ -26,11 +26,6 @@ public class PointController {
         return new ResponseEntity<>(pointService.createPoint(dto), HttpStatus.OK);
     }
 
-    @PutMapping(value = ControllerAPI.CONTROLLER_GENERAL_REQUEST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Point> update(@RequestBody Point point) {
-        return new ResponseEntity<>(pointService.updatePoint(point), HttpStatus.OK);
-    }
-
     @GetMapping(value = ControllerAPI.CONTROLLER_GENERAL_REQUEST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Point>> getPointsList() {
         return new ResponseEntity<>(pointService.getPointsList(), HttpStatus.OK);

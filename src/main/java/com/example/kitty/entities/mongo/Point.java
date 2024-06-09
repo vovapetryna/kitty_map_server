@@ -1,5 +1,7 @@
 package com.example.kitty.entities.mongo;
 
+import com.example.kitty.entities.LatLong;
+import com.example.kitty.entities.PgEdge;
 import com.example.kitty.entities.enums.Category;
 import com.example.kitty.utils.GeoJsonDeserializer;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -49,10 +51,15 @@ public class Point {
 
     private Boolean wasEditedRamp;
     private Boolean wasEditedObstacle;
-
     private Long wayId;
+    private Double wayChangeMultiplication;
+    private PgEdge wayEdge;
 
     @JsonDeserialize(using = GeoJsonDeserializer.class)
     @GeoSpatialIndexed(type = GeoSpatialIndexType.GEO_2DSPHERE)
     private GeoJsonPoint location;
+
+    public LatLong getLatLong() {
+        return new LatLong(location.getY(), location.getX());
+    }
 }

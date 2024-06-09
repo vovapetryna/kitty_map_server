@@ -7,6 +7,8 @@ import com.example.kitty.entities.enums.AttributeType;
 import com.example.kitty.entities.mongo.Attribute;
 import com.example.kitty.entities.mongo.Point;
 import com.example.kitty.mappers.PointMapper;
+import com.example.kitty.repositories.PgRoutingRepository;
+import com.example.kitty.repositories.PgWeightingRepository;
 import com.example.kitty.repositories.PointRepository;
 import com.example.kitty.repositories.WayOsmRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,76 +16,57 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class PointService {
     private final PointRepository pointRepository;
-
     private final WayOsmRepository wayRepository;
     private final PointMapper pointMapper;
     private final IdGenerator idGenerator;
+    private final PgRoutingRepository routingRepository;
+    private final PgWeightingRepository weightingRepository;
 
     public List<Point> filterPoints(PointFilterDto pointFilterDto) {
         return pointRepository.findAllPointsByTrainingFilterData(pointFilterDto);
     }
 
     public Point createPoint(PointDto pointDto) {
+        Double ISSUE_MULTIPLICATION = 10d;
+        Double INFRA_MULTIPLICATION = 0.1d; 
+
         Point point = pointMapper.toModel(pointDto).setId(idGenerator.nextId());
-        if (checkIfObstacleIsPresent(point)) {
-            System.out.printf("finding wat for point %s \n", point.getId());
-            WayOsm wayBlocked = wayRepository.findFirstByWaylineNear(pointDto.getLocation().getX(), pointDto.getLocation().getY());
-            if (wayBlocked != null) {
-                System.out.printf("found way %s \n", wayBlocked.getId());
-                point.setWayId(wayBlocked.getId());
-                point.setWasEditedObstacle(true);
+
+        point.getAttributes().stream().map(a -> {
+            Optional<Double> result = Optional.empty();
+            if (a.getAttributeType() == AttributeType.issue) {
+                result = Optional.of(ISSUE_MULTIPLICATION);
+            } else if (a.getAttributeType() == AttributeType.infra) {
+                result = Optional.of(INFRA_MULTIPLICATION);
             }
-        }
+            return result;
+        }).filter(Optional::isPresent).flatMap(Optional::stream).findFirst().ifPresent(multiplication -> {
+            log.info("adding way point with multiplication: {}", multiplication);
+            var pgId = routingRepository.getClosestEdgeToPoint(point.getLatLong());
+            log.info("found nearest edge: {}", pgId);
+            var pgEdge = weightingRepository.applyReweighing(pgId, multiplication, false);
+            point.setWayEdge(pgEdge);
+            point.setWayId(pgId);
+            point.setWayChangeMultiplication(multiplication);
+        });
+
         return pointRepository.save(point);
     }
 
-    private boolean checkIfRampIsPresent(Point point) {
-        return point.getAttributes() != null && point.getAttributes().stream()
-                .map(Attribute::getAttributeType).anyMatch(attributeType -> attributeType.equals(AttributeType.ramp));
-    }
-
-    private boolean checkIfObstacleIsPresent(Point obstacle) {
-        return obstacle.getAttributes() != null && obstacle.getAttributes().stream()
-                .map(Attribute::getAttributeType).anyMatch(attributeType -> attributeType.equals(AttributeType.obstacleMarking));
-    }
-
-    public Point updatePoint(Point point) {
-        var pointOption = pointRepository.findById(point.getId());
-
-        return pointOption.map(p -> {
-            if (checkIfRampIsPresent(p) != checkIfRampIsPresent(point)
-                    && p.getWayId() != null) {
-                p.setWasEditedRamp(true);
-            }
-
-            if (checkIfObstacleIsPresent(p) != checkIfObstacleIsPresent(point)) {
-                WayOsm wayBlocked = wayRepository.findFirstByWaylineNear(point.getLocation().getX(), point.getLocation().getY());
-                if (p.getWayId() != null) {
-                    p.setWasEditedObstacle(true);
-                } else if (wayBlocked != null) {
-                    p.setWayId(wayBlocked.getId());
-                    p.setWasEditedObstacle(true);
-                }
-            }
-
-            p.setCategory(point.getCategory());
-            p.setAttributes(point.getAttributes());
-            p.setLocation(point.getLocation());
-            p.setName(point.getName());
-            p.setDescription(point.getDescription());
-
-            return pointRepository.save(p);
-        }).orElseGet(() -> pointRepository.save(point));
-    }
-
     public void deletePoint(Long pointId) {
-        pointRepository.deleteById(pointId);
+        pointRepository.findById(pointId).ifPresent(point -> {
+            if (point.getWayId() != null && point.getWayChangeMultiplication() != null) {
+                weightingRepository.applyReweighing(point.getWayId(), point.getWayChangeMultiplication(), true);
+            }
+            pointRepository.deleteById(pointId);
+        });
     }
 
     public List<Point> getPointsList() {

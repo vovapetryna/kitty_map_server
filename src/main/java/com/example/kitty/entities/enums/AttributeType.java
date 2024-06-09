@@ -25,5 +25,7 @@ public enum AttributeType {
     wiFi,
     signLanguageTranslation,
     workingWithoutLight,
+    issue,
+    infra
     ;
 }
